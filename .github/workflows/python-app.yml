@@ -17,6 +17,9 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    env:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python 3.10
@@ -37,3 +40,32 @@ jobs:
     - name: Test with pytest
       run: |
         pytest
+    - name: Starting Slack Notification
+      uses: act10ns/slack@v1
+      if: always()
+      with: 
+        status: starting
+        channel: '#taller-usuario'
+        message: Starting Workflow...
+    - name: Failure Slack Notification
+      uses: act10ns/slack@v1
+      if: failure()
+      with: 
+        status: failure
+        channel: '#taller-usuario'
+        message: Workflow failed
+    - name: Success Slack Notification
+      uses: act10ns/slack@v1
+      if: success()
+      with: 
+        status: success
+        channel: '#taller-usuario'
+        message: Workflow finished successfully! 
+    - name: Cancelled Slack Notification
+      uses: act10ns/slack@v1
+      if: cancelled()
+      with: 
+        status: cancelled
+        channel: '#taller-usuario'
+        message: Workflow cancelled
+      
