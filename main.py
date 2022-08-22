@@ -5,6 +5,7 @@ from pydantic import BaseModel
 from typing import Optional
 import json
 import logging
+from prometheus_fastapi_instrumentator import Instrumentator
 
 logging.basicConfig(
     level = logging.DEBUG,
@@ -13,6 +14,8 @@ logging.basicConfig(
 )
 
 app = FastAPI()
+
+Instrumentator().instrument(app).expose(app)
 
 @app.get("/")
 def getAuthUsers():
